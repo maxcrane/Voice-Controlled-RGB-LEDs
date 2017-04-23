@@ -8,31 +8,37 @@
 #include "UpnpBroadcastResponder.h"
 #include "CallbackFunction.h"
 
-// prototypes
-boolean connectWifi();
+// wifi credentials
+const char* ssid = "your wifi network name";
+const char* password = "your wifi password";
 
 // callbacks
 void turnOnWindowBlue();
 void turnOnWindow();
 void turnOffWindow();
 
-// wifi credentials
-const char* ssid = "your wifi network name";
-const char* password = "your wifi password";
-
+// Define your switches here. Max 14
+// Format: Alexa invocation name, local port no, on callback, off callback
+#define NUMSWITCHES  2
+Switch *allSwitches[] = {
+                          new Switch("window", 80, turnOnWindow, turnOffWindow), 
+                          new Switch("blue window", 81, turnOnWindowBlue, turnOffWindow)
+                        };
+                        
 // The pin on the ESP8266 that is connected to the NeoPixels
 #define PIN            D3
 
 // Number of NeoPixels are attached to the ESP8266
 #define NUMPIXELS      300
 
+// Global variables
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 Lights lights(&pixels);
 boolean wifiConnected = false;
 UpnpBroadcastResponder upnpBroadcastResponder;
 
-Switch *window = NULL;
-Switch *blueWindow = NULL;
+// prototypes
+boolean connectWifi();
 
 void setup() {
   ESP.wdtDisable();
@@ -48,15 +54,11 @@ void setup() {
   
   if(wifiConnected){
     upnpBroadcastResponder.beginUdpMulticast();
-    
-    // Define your switches here. Max 14
-    // Format: Alexa invocation name, local port no, on callback, off callback
-    window = new Switch("window", 80, turnOnWindow, turnOffWindow);
-    blueWindow = new Switch("blue window", 81, turnOnWindowBlue, turnOffWindow);
-    
+   
     Serial.println("Adding switches upnp broadcast responder");
-    upnpBroadcastResponder.addDevice(*window);
-    upnpBroadcastResponder.addDevice(*blueWindow);
+    for(int i = 0; i < NUMSWITCHES; i++){
+      upnpBroadcastResponder.addDevice(*allSwitches[i]);
+    }
   }  
 }
 
@@ -65,9 +67,9 @@ void loop() {
 
   if(wifiConnected){
     upnpBroadcastResponder.serverLoop();
-    
-    window->serverLoop();
-    blueWindow->serverLoop();
+    for(int i = 0; i < NUMSWITCHES; i++){
+      allSwitches[i]->serverLoop();
+    } 
   }
 }
       
