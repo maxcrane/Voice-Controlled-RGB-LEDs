@@ -18,10 +18,10 @@ const char* password = "your wifi password";
 
 // Which pin on the Arduino is connected to the NeoPixels?
 // On a Trinket or Gemma we suggest changing this to 1
-#define PIN            D4
+#define PIN            D3
 
 // How many NeoPixels are attached to the Arduino?
-#define NUMPIXELS      150
+#define NUMPIXELS      300
 int delayval = 1; // delay for half a second during on/off transition
 
 
@@ -45,16 +45,17 @@ String serial;
 String persistent_uuid;
 String device_name;
 
-const int relayPin = D1;
-
 boolean cannotConnectToWifi = false;
 
 void setup() {
-  
-  Serial.begin(115200);
-  //WiFi.persistent(false);
+  ESP.wdtDisable();
+  ESP.wdtEnable(WDTO_8S);
+
+  Serial.begin(9600);
+
   pixels.begin();
-  
+  pixels.show();
+  pixels.setBrightness(255);
   prepareIds();
   
   // Initialise wifi connection
@@ -72,6 +73,7 @@ void setup() {
 }
 
 void loop() {
+  ESP.wdtFeed();
   HTTP.handleClient();
   delay(1);
   

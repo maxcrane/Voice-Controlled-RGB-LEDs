@@ -30,11 +30,12 @@ void Lights::show()
 
 void Lights::showNothing()
 {
+  
   for(int i=0; i<_numPixels; i++){
-    _pixels->setPixelColor(i, _pixels->Color(0,0,0)); // Moderately bright green color.
+    _pixels->setPixelColor(i, _pixels->Color(0,0,0)); // No color
     _pixels->show(); // This sends the updated pixel color to the hardware.
-    delay(1); // Delay for a period of time (in milliseconds).
-  }
+    ESP.wdtFeed();
+  } 
 }
 
 void Lights::showRainbow(){
@@ -51,6 +52,8 @@ void Lights::showRainbow(){
         _pixels->setPixelColor(i, (ij -170) * 3, 255 - (ij -170) * 3, 0);
     
     _pixels->show(); // This sends the updated pixel color to the hardware.
+    ESP.wdtFeed();
   }
+ 
 }
 
