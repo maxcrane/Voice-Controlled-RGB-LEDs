@@ -12,20 +12,42 @@ Lights::Lights(Adafruit_NeoPixel* pixels)
 void Lights::offMode()
 {
   _lightsMode = "off";
+  show();
 }
 
 void Lights::rainbowMode()
 {
   _lightsMode = "rainbow";
+  show();
 }
+
+void Lights::blueMode()
+{
+  _lightsMode = "blue";
+  show();
+}
+
 
 void Lights::show()
 {
   if(_lightsMode.equals("rainbow")){
     showRainbow();
-  } else {
+  } else if(_lightsMode.equals("blue")){
+    showBlue();
+  }
+  else {
     showNothing();
   }
+}
+
+void Lights::showBlue()
+{
+  
+  for(int i=0; i<_numPixels; i++){
+    _pixels->setPixelColor(i, _pixels->Color(0,0,255)); // blue
+    _pixels->show(); // This sends the updated pixel color to the hardware.
+    ESP.wdtFeed();
+  } 
 }
 
 void Lights::showNothing()

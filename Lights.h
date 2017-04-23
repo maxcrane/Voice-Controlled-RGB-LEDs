@@ -12,16 +12,17 @@ class Lights
   public:
     Lights(Adafruit_NeoPixel* pixels);
     void offMode();
+    void blueMode();
     void rainbowMode();
-    void show();
-    
     
   private:
     Adafruit_NeoPixel* _pixels;
     int _numPixels;
     String _lightsMode;
     void showNothing();
+    void showBlue();
     void showRainbow();
+    void show();
 };
 
 #endif
