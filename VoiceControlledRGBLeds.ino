@@ -13,16 +13,23 @@ const char* ssid = "your wifi network name";
 const char* password = "your wifi password";
 
 // callbacks
-void turnOnWindowBlue();
-void turnOnWindow();
-void turnOffWindow();
+void turnOnLight();
+void turnOnLightBlue();
+void turnOnLightRed();
+void turnOnLightGreen();
+void turnOnLightPurple();
+void turnOnLight50();
+void turnOffLight();
 
 // Define your switches here. Max 14
 // Format: Alexa invocation name, local port no, on callback, off callback
-#define NUMSWITCHES  2
+#define NUMSWITCHES  5
 Switch *allSwitches[] = {
-                          new Switch("window", 80, turnOnWindow, turnOffWindow), 
-                          new Switch("blue window", 81, turnOnWindowBlue, turnOffWindow)
+                          new Switch("counter", 80, turnOnLight, turnOffLight), 
+                          new Switch("blue counter", 81, turnOnLightBlue, turnOffLight),
+                          new Switch("red counter", 82, turnOnLightRed, turnOffLight),
+                          new Switch("green counter", 83, turnOnLightGreen, turnOffLight),
+                          new Switch("purple counter", 84, turnOnLightPurple, turnOffLight)
                         };
                         
 // The pin on the ESP8266 that is connected to the NeoPixels
@@ -110,14 +117,30 @@ boolean connectWifi(){
   return state;
 }
 
-void turnOnWindowBlue() {
-  lights.blueMode();
+void turnOnLightBlue() {
+  lights.showColor(0, 0, 255);
 }
 
-void turnOnWindow() {
-  lights.rainbowMode();
+void turnOnLightRed(){
+  lights.showColor(255, 0, 0);
 }
 
-void turnOffWindow() {
-  lights.offMode();
+void turnOnLightGreen(){
+  lights.showColor(0, 255, 0);
+}
+
+void turnOnLightPurple(){
+  lights.showColor(255, 0, 255);
+}
+
+void turnOnLight50(){
+   lights.setBrightness(50);
+}
+
+void turnOnLight() {
+  lights.showRainbow();
+}
+
+void turnOffLight() {
+  lights.off();
 }
